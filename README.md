@@ -6,8 +6,8 @@ Sistema de controle de estoque desenvolvido em Flask, SQLite e Tailwind CSS.
 
 1. **Clone o repositório:**
    ```bash
-   git clone [https://github.com/SEU-USUARIO/jwcom-estoque.git](https://github.com/SEU-USUARIO/jwcom-estoque.git)
-   cd jwcom-estoque
+   git clone [https://github.com/DiDort/jwcom-controle-de-estoque-PROJETO-INTEGRADOR.git](https://github.com/DiDort/jwcom-controle-de-estoque-PROJETO-INTEGRADOR.git)
+   cd jwcom-controle-de-estoque-PROJETO-INTEGRADOR
 
 Instale os requisitos:
 pip install -r requirements.txt

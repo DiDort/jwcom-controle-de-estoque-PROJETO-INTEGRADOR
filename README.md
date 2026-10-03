@@ -1,21 +1,20 @@
-# JWCOM Estoque — Front-end V2
+# JWCOM Smart - Sistema de Gestão de Estoque
 
-Nova versão visual baseada nas referências fornecidas.
+Sistema de controle de estoque desenvolvido em Flask, SQLite e Tailwind CSS.
 
-## Incluído
-- Logo JWCOM Smart
-- Dashboard reorganizado com resumo e atalhos
-- Produtos com SKU + nome
-- Filtro de ativos/inativos
-- Fluxo visual para inativar produto preservando histórico
-- Botão "Exportar Produtos Cadastrados"
-- Nova Movimentação: Entrada, Saída e Ajuste
-- Histórico
-- Layout responsivo
+## 🚀 Como Executar o Projeto Localmente
 
-## Importante
-Nesta versão, os dados continuam fictícios. O botão de exportação demonstra a interface; a geração real do PDF será ligada ao banco no back-end.
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/SEU-USUARIO/jwcom-estoque.git](https://github.com/SEU-USUARIO/jwcom-estoque.git)
+   cd jwcom-estoque
 
-## Executar
+Instale os requisitos:
 pip install -r requirements.txt
+
+Execute a aplicação:
 python app.py
+
+Acesse no navegador: http://127.0.0.1:5000/
+
+As informações de login estão na pagina principal.

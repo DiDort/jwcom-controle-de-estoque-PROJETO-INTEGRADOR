@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Produtos - JWCOM Smart{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800">Gestão de Produtos</h2>
+            <p class="text-slate-500 text-sm">Cadastre, pesquise e controle o catálogo de produtos.</p>
+        </div>
+        <button onclick="document.getElementById('modalNovoProduto').classList.remove('hidden')" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-medium text-sm transition-colors flex items-center gap-2 shadow-sm self-start sm:self-auto">
+            <i class="fas fa-plus"></i> Novo Produto
+        </button>
+    </div>
+
+    <!-- Pesquisa -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
+        <form method="GET" action="{{ url_for('produtos') }}" class="flex gap-2">
+            <input type="text" name="busca" placeholder="Buscar por SKU ou Nome..." value="{{ busca }}" class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-sky-500 outline-none text-sm">
+            <button type="submit" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-medium text-sm transition-colors">
+                <i class="fas fa-search"></i>
+            </button>
+            {% if busca %}
+                <a href="{{ url_for('produtos') }}" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-medium text-sm transition-colors">Limpar</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Tabela -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="p-6 border-b border-slate-100 font-bold text-slate-800 text-sm">
+            Lista de Produtos
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase bg-slate-50/50">
+                        <th class="p-4">SKU</th>
+                        <th class="p-4">Nome</th>
+                        <th class="p-4">Quantidade</th>
+                        <th class="p-4">Estoque Mínimo</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4 text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                    {% if produtos %}
+                        {% for prod in produtos %}
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-4 font-semibold text-slate-700">{{ prod['sku'] }}</td>
+                            <td class="p-4 text-slate-600">{{ prod['nome'] }}</td>
+                            <td class="p-4">
+                                {% if prod['quantidade'] <= prod['estoque_minimo'] %}
+                                    <span class="px-2.5 py-1 bg-rose-100 text-rose-700 rounded-full font-bold text-xs">{{ prod['quantidade'] }}</span>
+                                {% else %}
+                                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-bold text-xs">{{ prod['quantidade'] }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-4 text-slate-500">{{ prod['estoque_minimo'] }}</td>
+                            <td class="p-4">
+                                {% if prod['ativo'] %}
+                                    <span class="px-2.5 py-1 bg-sky-100 text-sky-700 rounded-full font-semibold text-xs">Ativo</span>
+                                {% else %}
+                                    <span class="px-2.5 py-1 bg-slate-100 text-slate-500 rounded-full font-semibold text-xs">Inativo</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-4 text-right">
+                                {% if prod['ativo'] %}
+                                    <form action="{{ url_for('inativar_produto', id=prod['id']) }}" method="POST" class="inline">
+                                        <button type="submit" class="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Inativar">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ url_for('reativar_produto', id=prod['id']) }}" method="POST" class="inline">
+                                        <button type="submit" class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Reativar">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="p-6 text-center text-slate-400 text-sm">Nenhum produto cadastrado.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Produto -->
+<div id="modalNovoProduto" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="font-bold text-slate-800">Novo Produto</h3>
+            <button onclick="document.getElementById('modalNovoProduto').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
+                <i class="fas fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('cadastrar_produto') }}" method="POST" class="p-6 space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">SKU *</label>
+                <input type="text" name="sku" required placeholder="Ex: PROD001" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-sky-500">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nome do Produto *</label>
+                <input type="text" name="nome" required placeholder="Ex: Teclado Mecânico" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-sky-500">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Qtd Inicial</label>
+                    <input type="number" name="quantidade" value="0" min="0" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Estoque Mínimo</label>
+                    <input type="number" name="estoque_minimo" value="5" min="0" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-sky-500">
+                </div>
+            </div>
+            <div class="pt-4 flex justify-end gap-2">
+                <button type="button" onclick="document.getElementById('modalNovoProduto').classList.add('hidden')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium">Cancelar</button>
+                <button type="submit" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-medium">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

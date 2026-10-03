@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login | JWCOM Estoque</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body class="login-page">
+<div class="login-shell">
+  <section class="login-brand">
+    <img src="{{ url_for('static', filename='img/logo-jwcom.jpg') }}" alt="JWCOM Smart">
+    <div>
+      <span class="kicker"></span>
+      <h1>Controle Interno<br></h1>
+      <p></p>
+    </div>
+    <small>JWCOM Smart • Sistema de Controle de Estoque</small>
+  </section>
+  <section class="login-area">
+    <form method="post" action="{{ url_for('login') }}" class="login-card">
+      <h2>Acessar sistema</h2>
+      <p>Informe suas credenciais para continuar.</p>
+      <label>Usuário</label><input name="usuario" required placeholder="Digite seu usuário" autocomplete="username">
+      <label>Senha</label><input name="senha" required type="password" placeholder="Digite sua senha" autocomplete="current-password">
+      <button class="btn primary full">Entrar</button>
+      {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<p class="flash {{ category }}">{{ message }}</p>{% endfor %}{% endwith %}<em>Profressor use: admin / admin123 para acessar o painel.</em>
+    </form>
+  </section>
+</div>
+</body></html>

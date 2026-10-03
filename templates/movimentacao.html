@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Movimentação de Estoque - JWCOM Smart{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div>
+        <h2 class="text-2xl font-bold text-slate-800">Registrar Movimentação de Estoque</h2>
+        <p class="text-slate-500 text-sm">Realize entradas, saídas e ajustes manuais de saldo de produtos.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="p-6 border-b border-slate-100 bg-sky-50/50 flex items-center gap-2 text-sky-800 font-bold text-sm">
+            <i class="fas fa-pen-to-square text-sky-600"></i> Formulário de Lançamento
+        </div>
+
+        <form action="{{ url_for('salvar_movimentacao') }}" method="POST" class="p-6 space-y-6">
+            <!-- Seleção do Produto -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Selecione o Produto <span class="text-rose-500">*</span>
+                </label>
+                <select name="produto_id" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all text-sm">
+                    <option value="" disabled selected>-- Escolha um produto registrado --</option>
+                    {% for prod in produtos %}
+                        <option value="{{ prod['id'] }}">
+                            {{ prod['sku'] }} - {{ prod['nome'] }} (Saldo Atual: {{ prod['quantidade'] }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Tipo de Operação e Quantidade -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        Tipo de Operação <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="tipo" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all text-sm font-medium">
+                        <option value="entrada" class="text-emerald-600 font-semibold">Entrada (+)</option>
+                        <option value="saida" class="text-rose-600 font-semibold">Saída (-)</option>
+                        <option value="ajuste" class="text-sky-600 font-semibold">Ajuste de Saldo (=)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        Quantidade <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="number" name="quantidade" min="1" required placeholder="Ex: 10" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all text-sm">
+                </div>
+            </div>
+
+            <!-- Canal / Origem -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Canal / Origem
+                </label>
+                <input type="text" name="canal" placeholder="Ex: Fornecedor, Venda Loja, Inventário" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all text-sm">
+            </div>
+
+            <!-- Justificativa -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Justificativa / Observação
+                </label>
+                <textarea name="justificativa" rows="3" placeholder="Informações adicionais da movimentação..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all text-sm resize-none"></textarea>
+            </div>
+
+            <!-- Botão Submit -->
+            <div class="pt-2">
+                <button type="submit" class="w-full py-3.5 px-6 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2">
+                    <i class="fas fa-circle-check"></i> Confirmar Movimentação
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

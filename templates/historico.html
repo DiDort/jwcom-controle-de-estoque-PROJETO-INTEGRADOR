@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Histórico de Movimentações - JWCOM Smart{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div>
+        <h2 class="text-2xl font-bold text-slate-800">Histórico de Movimentações</h2>
+        <p class="text-slate-500 text-sm">Registro auditável de todas as entradas, saídas e ajustes do estoque.</p>
+    </div>
+
+    <!-- Tabela de Histórico -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <i class="fas fa-clock-rotate-left text-sky-600"></i> Auditoria de Transações
+            </h4>
+            <span class="text-xs font-semibold text-slate-400">Total: {{ movimentacoes|length }} registros</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase bg-slate-50/50">
+                        <th class="p-4">Data / Hora</th>
+                        <th class="p-4">SKU / Produto</th>
+                        <th class="p-4">Operação</th>
+                        <th class="p-4">Qtd</th>
+                        <th class="p-4">Estoque (Antes -> Depois)</th>
+                        <th class="p-4">Canal / Origem</th>
+                        <th class="p-4">Responsável</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                    {% if movimentacoes %}
+                        {% for mov in movimentacoes %}
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-4 text-xs font-medium text-slate-500 whitespace-nowrap">
+                                {{ mov['data_hora'] }}
+                            </td>
+                            <td class="p-4 text-slate-700">
+                                <span class="font-bold text-slate-800">{{ mov['sku'] }}</span> 
+                                <span class="text-slate-500">- {{ mov['produto_nome'] }}</span>
+                            </td>
+                            <td class="p-4">
+                                {% if mov['tipo'] == 'entrada' %}
+                                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-bold text-xs inline-flex items-center gap-1">
+                                        <i class="fas fa-arrow-down text-[10px]"></i> Entrada
+                                    </span>
+                                {% elif mov['tipo'] == 'saida' %}
+                                    <span class="px-2.5 py-1 bg-rose-100 text-rose-700 rounded-full font-bold text-xs inline-flex items-center gap-1">
+                                        <i class="fas fa-arrow-up text-[10px]"></i> Saída
+                                    </span>
+                                {% else %}
+                                    <span class="px-2.5 py-1 bg-sky-100 text-sky-700 rounded-full font-bold text-xs inline-flex items-center gap-1">
+                                        <i class="fas fa-sliders text-[10px]"></i> Ajuste
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="p-4 font-bold text-slate-800">
+                                {{ mov['quantidade'] }}
+                            </td>
+                            <td class="p-4 text-xs text-slate-600">
+                                <span class="px-2 py-0.5 bg-slate-100 rounded text-slate-500">{{ mov['estoque_anterior'] }}</span>
+                                <i class="fas fa-arrow-right text-[10px] mx-1 text-slate-400"></i>
+                                <span class="px-2 py-0.5 bg-sky-50 text-sky-700 rounded font-bold">{{ mov['estoque_posterior'] }}</span>
+                            </td>
+                            <td class="p-4 text-slate-600 text-xs">
+                                {{ mov['canal'] if mov['canal'] else '-' }}
+                            </td>
+                            <td class="p-4 text-slate-700 text-xs font-medium">
+                                <i class="fas fa-user-circle text-slate-400 mr-1"></i> {{ mov['usuario_nome'] }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="p-8 text-center text-slate-400 text-sm">
+                                <i class="fas fa-folder-open text-3xl mb-2 text-slate-300 block"></i>
+                                Nenhuma movimentação foi registrada até o momento.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
